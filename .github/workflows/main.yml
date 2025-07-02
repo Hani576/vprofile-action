@@ -60,7 +60,7 @@ jobs:
         #  sonar-token: ${{ secrets.SONAR_TOKEN }}
 
 
-  Build & Publish:
+  Build_AND_Publish:
    needs: Testing
    runs-on: ubuntu-latest
    steps:
