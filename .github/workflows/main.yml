@@ -2,7 +2,7 @@ name: vprofile actions
 on: workflow_dispatch
 env:
   AWS_REGION: us-west-2
-  ECR_REPOSITORY: vprofileapp
+  ECR_REPOSITORY: my-repo
   EKS_CLUSTER_NAME: my-eks
 
 
