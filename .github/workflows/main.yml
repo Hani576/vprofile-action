@@ -85,7 +85,7 @@ jobs:
    runs-on: ubuntu-latest
    steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     - name: configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -105,16 +105,31 @@ jobs:
     #- name: login into ECR 
      # run: kubectl create secret docker-registry regcred --docker-server=${{ secrets.REGISTRY }} --docker-username=AWS --docker-password="$(aws ecr get-login-password)" 
      
-    - name: deploy helm
-      uses: bitovi/github-actions-deploy-eks-helm@v1.2.8
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
-        cluster-name: ${{ env.EKS_CLUSTER_NAME }}
-        helm-chart: ./helm/vprofilecharts
-        
-        namespace: default
-        values: appimage=${{ secrets.REGISTRY }}/${{ env.ECR_REPOSITORY }},apptag=${{ github.run_number }} 
-        name: vprofile-stack
-          #
+   # - name: deploy helm
+   #   uses: bitovi/github-actions-deploy-eks-helm@v1.2.8
+   #   with:
+   #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+   #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+   #     aws-region: ${{ env.AWS_REGION }}
+   #     cluster-name: ${{ env.EKS_CLUSTER_NAME }}
+   #     helm-chart: ./helm/vprofilecharts
+   #     
+   #     namespace: default
+   #     values: appimage=${{ secrets.REGISTRY }}/${{ env.ECR_REPOSITORY }},apptag=${{ github.run_number }} 
+   #     name: vprofile-stack
+   #       #
+
+
+    - name: Debug chart directory
+      run: |
+          echo "Chart directory structure:"
+          ls -R helm/vprofilecharts
+
+    - name: Deploy with Helm
+      run: |
+          helm upgrade --install vprofile-stack ./helm/vprofilecharts \
+            --namespace default \
+            --create-namespace \
+            --set appimage=${{ secrets.REGISTRY }}/${{ env.ECR_REPOSITORY }},apptag=${{ github.run_number }} \
+            --dependency-update \
+            --timeout 5m
