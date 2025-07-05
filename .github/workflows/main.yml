@@ -85,7 +85,7 @@ jobs:
    runs-on: ubuntu-latest
    steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
       
     - name: configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -112,7 +112,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
         cluster-name: ${{ env.EKS_CLUSTER_NAME }}
-        helm-chart: helm/vprofilecharts
+        helm-chart: ./helm/vprofilecharts
         
         namespace: default
         values: appimage=${{ secrets.REGISTRY }}/${{ env.ECR_REPOSITORY }},apptag=${{ github.run_number }} 
